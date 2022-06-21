@@ -6,6 +6,7 @@ const char ESC = '\x1b';
 int min(int a, int b){ return a<b?a:b; } 
 int max(int a, int b){ return a>b?a:b; } 
 
+// Simple terminal colors
 typedef enum {
   BLACK,
   RED,
@@ -25,6 +26,7 @@ typedef enum {
   BR_WHITE,
 } Color;
 
+// Function to change color using ansi escape codes
 void colorFG(Color col){
   printf("%c[%dm",ESC,(int)col+30);
 }
@@ -33,6 +35,7 @@ void colorBG(Color col){
   printf("%c[%dm",ESC,(int)col+40);
 }
 
+// Revert to original terminal
 void revert(){
   printf("%c[0m",ESC);
 }
@@ -55,14 +58,8 @@ int main(int argc, char** argv){
   FILE *f = fopen(argv[3], "r");
   fseek(f,0L,SEEK_END);
   const size_t size = ftell(f);
+  printf("Size: %d\n", size);
   rewind(f);
-  char *buffer = (char*)malloc(max(rows*cols, size));
-  fread(buffer, 1, size-1,f);
-  char* screen = buffer;
-  for(size_t t = 0; t < rows; ++t){
-    printf("%.*s\n",cols,screen+(cols*t));
-  }
-  free(buffer);
   fclose(f);
 
   colorBG(WHITE);
